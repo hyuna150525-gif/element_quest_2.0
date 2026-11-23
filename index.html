@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | element_quest</title>
+    <title>원소 수집가 118</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
@@ -24,6 +24,7 @@
       </div>
     </div>
     <script>
+      window.addEventListener("unhandledrejection", function (e) { document.title = "오류: " + (e.reason && e.reason.message || e.reason); });
       var canvas = document.querySelector("#unity-canvas");
 
       // Shows a temporary message banner/ribbon for a few seconds, or
@@ -64,6 +65,8 @@
         productName: "element_quest",
         productVersion: "0.1.0",
         showBanner: unityShowBanner,
+        // Unity's IndexedDB/Cache-API data cache can hang loading at 0% on https hosts → always download normally
+        cacheControl: function (url) { return "no-store"; },
       };
 
       // By default, Unity keeps WebGL canvas render target size matched with
@@ -110,13 +113,16 @@
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+          document.title = "로딩 " + Math.round(100 * progress) + "% · 원소 수집가 118";
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
+                document.title = "원소 수집가 118";
                 document.querySelector("#unity-fullscreen-button").onclick = () => {
                   unityInstance.SetFullscreen(1);
                 };
 
               }).catch((message) => {
+                document.title = "오류: " + message;
                 alert(message);
               });
             };
